@@ -1,8 +1,8 @@
 (function (global, factory) {
   if (typeof define === "function" && define.amd) {
-    define(["exports", "react", "jsonp", "prop-types"], factory);
+    define(['exports', 'react', 'jsonp', 'prop-types'], factory);
   } else if (typeof exports !== "undefined") {
-    factory(exports, require("react"), require("jsonp"), require("prop-types"));
+    factory(exports, require('react'), require('jsonp'), require('prop-types'));
   } else {
     var mod = {
       exports: {}
@@ -11,7 +11,7 @@
     global.index = mod.exports;
   }
 })(this, function (exports, _react, _jsonp, _propTypes) {
-  "use strict";
+  'use strict';
 
   Object.defineProperty(exports, "__esModule", {
     value: true
@@ -43,6 +43,20 @@
 
     return obj;
   }
+
+  var _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -105,7 +119,7 @@
     }
 
     _createClass(Mailchimp, [{
-      key: "handleSubmit",
+      key: 'handleSubmit',
       value: function handleSubmit(evt) {
         var _this2 = this;
 
@@ -115,22 +129,22 @@
             action = _props.action;
 
         var values = fields.map(function (field) {
-          return field.name + "=" + encodeURIComponent(_this2.state[field.name]);
-        }).join("&");
-        var path = action + "&" + values;
+          return field.name + '=' + encodeURIComponent(_this2.state[field.name]);
+        }).join('&');
+        var path = action + '&' + values;
         var url = path.replace('/post?', '/post-json?');
         var regex = /^([\w_\.\-\+])+\@([\w\-]+\.)+([\w]{2,10})+$/;
         var email = this.state['EMAIL'];
-        !regex.test(email) ? this.setState({ status: "empty" }) : this.sendData(url);
+        !regex.test(email) ? this.setState({ status: 'empty' }) : this.sendData(url);
       }
     }, {
-      key: "sendData",
+      key: 'sendData',
       value: function sendData(url) {
         var _this3 = this;
 
-        this.setState({ status: "sending" });
-        (0, _jsonp2.default)(url, { param: "c" }, function (err, data) {
-          if (data.msg.includes("already subscribed")) {
+        this.setState({ status: 'sending' });
+        (0, _jsonp2.default)(url, { param: 'c' }, function (err, data) {
+          if (data.msg.includes('already subscribed')) {
             _this3.setState({ status: 'duplicate' });
           } else if (err) {
             _this3.setState({ status: 'error' });
@@ -138,68 +152,69 @@
             _this3.setState({ status: 'error' });
           } else {
             _this3.setState({ status: 'success' });
-          };
+          }
         });
       }
     }, {
-      key: "render",
+      key: 'render',
       value: function render() {
         var _this4 = this;
 
         var _props2 = this.props,
-            messages = _props2.messages,
             fields = _props2.fields,
             styles = _props2.styles,
-            className = _props2.className;
+            className = _props2.className,
+            buttonClassName = _props2.buttonClassName;
+
+        var messages = _extends({}, Mailchimp.defaultProps.messages, this.props.messages);
         var status = this.state.status;
 
         return _react2.default.createElement(
-          "form",
+          'form',
           { onSubmit: this.handleSubmit.bind(this), className: className },
           fields.map(function (input) {
-            return _react2.default.createElement("input", { key: Math.random(),
-              onBlur: function onBlur(_ref) {
+            return _react2.default.createElement('input', _extends({}, input, {
+              key: input.name,
+              onChange: function onChange(_ref) {
                 var target = _ref.target;
                 return _this4.setState(_defineProperty({}, input.name, target.value));
               },
-              placeholder: input.placeholder,
-              name: input.name,
-              type: input.type,
-              defaultValue: _this4.state[input.name] });
+              defaultValue: _this4.state[input.name]
+            }));
           }),
           _react2.default.createElement(
-            "button",
+            'button',
             {
-              disabled: status === "sending" || status === "success",
-              type: "submit"
+              disabled: status === 'sending' || status === 'success',
+              type: 'submit'
             },
             messages.button
           ),
           _react2.default.createElement(
-            "div",
-            { className: "msg-alert" },
-            status === "sending" && _react2.default.createElement(
-              "p",
+            'div',
+            { className: 'msg-alert' },
+            status === 'sending' && _react2.default.createElement(
+              'p',
               { style: styles.sendingMsg },
               messages.sending
             ),
-            status === "success" && _react2.default.createElement(
-              "p",
+            status === 'success' && _react2.default.createElement(
+              'p',
               { style: styles.successMsg },
               messages.success
             ),
-            status === "duplicate" && _react2.default.createElement(
-              "p",
+            status === 'duplicate' && _react2.default.createElement(
+              'p',
               { style: styles.duplicateMsg },
               messages.duplicate
             ),
-            status === "empty" && _react2.default.createElement(
-              "p",
+            status === 'empty' && _react2.default.createElement(
+              'p',
               { style: styles.errorMsg },
               messages.empty
             ),
-            status === "error" && _react2.default.createElement(
-              "p",
+            status === 'error' && _react2.default.createElement(
+              'p',
               { style: styles.errorMsg },
               messages.error
             )
@@ -213,11 +228,11 @@
 
   Mailchimp.defaultProps = {
     messages: {
-      sending: "Sending...",
-      success: "Thank you for subscribing!",
-      error: "An unexpected internal error has occurred.",
-      empty: "You must write an e-mail.",
-      duplicate: "Too many subscribe attempts for this email address",
+      sending: 'Sending...',
+      success: 'Thank you for subscribing!',
+      error: 'An unexpected internal error has occurred.',
+      empty: 'You must write an e-mail.',
+      duplicate: 'Too many subscribe attempts for this email address',
       button: 'Subscribe!'
     },
     styles: {
